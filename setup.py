@@ -17,13 +17,13 @@ install_requires = (
 __version__ = "0.0.1"
 
 setup(
-    name="mixcian",
+    name="mixician",
     version=__version__,
     author="Yin Cheng",
     author_email="yin.sjtu@gmail.com",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    url="https://github.com/yinsn/Mixcian",
+    url="https://github.com/yinsn/Mixician",
     python_requires=">=3.6",
     description="An advanced hybrid ranking engine for recommendation systems, designed to automate the optimization of algorithms and parameters tailored to diverse business objectives.",
     packages=find_packages("src"),
