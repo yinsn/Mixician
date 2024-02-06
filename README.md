@@ -1,4 +1,4 @@
-<div align="center"><img src="https://github.com/yinsn/Mixician/blob/develop/docs/images/Mixician.svg" width="400"/></div>
+<div align="center"><img src="https://github.com/yinsn/Mixician/blob/develop/docs/images/Mixician.svg" width="1000"/></div>
 
 # Mixician
 [![Python](https://img.shields.io/badge/python3.6%7C3.7%7C3.8%7C3.9-red?logo=Python&logoColor=white)](https://www.python.org)
