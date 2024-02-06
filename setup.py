@@ -11,6 +11,8 @@ install_requires = (
     [
         "jax>=0.4.14",
         "numpyro>=0.12.0",
+        "optuna>=3.0.6",
+        "pandas>=2.0.3",
     ],
 )
 
