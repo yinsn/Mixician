@@ -13,6 +13,7 @@ install_requires = (
         "numpyro>=0.12.0",
         "optuna>=3.0.6",
         "pandas>=2.0.3",
+        "pydantic>=2.5.2",
     ],
 )
 
@@ -26,7 +27,7 @@ setup(
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     url="https://github.com/yinsn/Mixician",
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     description="An advanced hybrid ranking engine for recommendation systems, designed to automate the optimization of algorithms and parameters tailored to diverse business objectives.",
     packages=find_packages("src"),
     package_dir={"": "src"},

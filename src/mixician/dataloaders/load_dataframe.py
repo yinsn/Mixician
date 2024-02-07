@@ -4,7 +4,7 @@ from typing import Dict, Optional
 
 import pandas as pd
 
-from .base import BaseDataLoader
+from .base import BaseDataLoader, BaseDataLoaderConfig
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -19,22 +19,15 @@ class DataFrameLoader(BaseDataLoader):
     data from different file formats into pandas DataFrames, currently supporting CSV files.
 
     Attributes:
-        file_path (Optional[str]): The directory path to the file.
-        file_name (Optional[str]): The name of the file.
-        file_type (str): The type of the file (e.g., 'csv').
-        max_rows (Optional[int]): The maximum number of rows to load.
         config (Optional[Dict]): Configuration options for loading.
     """
 
     def __init__(
         self,
-        file_path: Optional[str] = None,
-        file_name: Optional[str] = None,
-        file_type: str = "csv",
-        max_rows: Optional[int] = None,
         config: Optional[Dict] = None,
     ) -> None:
-        super().__init__(file_path, file_name, file_type, max_rows, config)
+        super().__init__(config=config)
+        self.config = BaseDataLoaderConfig(**(config or {}))
 
     def _load_from_csv(self) -> pd.DataFrame:
         """Loads data from a CSV file into a pandas DataFrame.
@@ -43,7 +36,7 @@ class DataFrameLoader(BaseDataLoader):
             pd.DataFrame: The loaded data as a pandas DataFrame.
         """
         logger.info(f"Loading csv data from {self.file_path}...")
-        file_url = os.path.join(self.file_path, self.file_name)
+        file_url = os.path.join(str(self.file_path), str(self.file_name))
         return pd.read_csv(file_url + ".csv", nrows=self.max_rows)
 
     @staticmethod
