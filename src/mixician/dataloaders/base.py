@@ -1,8 +1,14 @@
+import logging
 from abc import ABCMeta, abstractmethod
 from typing import Dict, Optional
 
 import pandas as pd
 from pydantic import BaseModel
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 class BaseDataLoaderConfig(BaseModel):
@@ -49,6 +55,7 @@ class BaseDataLoader(metaclass=ABCMeta):
             config (Optional[Dict]): Configuration dictionary to initialize the BaseDataLoaderConfig object.
                                      If None, defaults to an empty dictionary.
         """
+        logger.info("Initializing data loader...")
         self.config = BaseDataLoaderConfig(**(config or {}))
         self.file_path = self.config.file_path
         self.file_name = self.config.file_name
