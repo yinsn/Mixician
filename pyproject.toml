@@ -10,12 +10,12 @@ repository = "https://github.com/yinsn/Mixician"
 packages = [{ include = "mixician", from = "src" }]
 
 [tool.poetry.dependencies]
-python = "^3.9"
 jax = "^0.4.24"
-pandas = "^2.2.0"
 numpyro = "^0.13.2"
 optuna = "^3.5.0"
+pandas = "^2.2.0"
 pydantic = "^2.6.1"
+python = "^3.9"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.2"
