@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, List, Optional
 
 import numpy as np
@@ -5,6 +6,11 @@ import pandas as pd
 
 from .base import BaseBalancer, BaseBalancerConfig
 from .compute_divergence import jensen_shannon_divergence
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 class ProbabilisticBalancerConfig(BaseBalancerConfig):
@@ -36,14 +42,21 @@ class ProbabilisticBalancer(BaseBalancer):
         self.config = ProbabilisticBalancerConfig(**(config or {}))
         self.top_n_exposure = self.config.top_n_exposure
         self.target_ratios = self.config.target_ratios
+        self._initialize_target_ratios()
 
     def _initialize_target_ratios(self) -> None:
         """Initializes target ratios based on the categories present in the dataframe."""
+        logger.info("Initializing target ratios...")
         self.compute_exposure_ratios()
         if self.target_ratios == {}:
             ratio = 1 / len(self.exposure_ratios)
             for category, _ in self.exposure_ratios.to_dict():
                 self.target_ratios[category] = ratio
+        else:
+            target_ratios_list: List = []
+            for category, _ in self.target_ratios.items():
+                target_ratios_list.append(self.target_ratios[category])
+            self.target_ratios_vector = np.asarray(target_ratios_list)
 
     def compute_exposure_ratios(self) -> None:
         """Computes the exposure ratios of categories within the top N exposures."""
@@ -64,12 +77,6 @@ class ProbabilisticBalancer(BaseBalancer):
 
     def evaluate(self) -> None:
         """Evaluates the current setup by calculating the Jensen-Shannon divergence."""
-        self._initialize_target_ratios()
-
-        target_ratios_list: List = []
-        for category, _ in self.target_ratios.items():
-            target_ratios_list.append(self.target_ratios[category])
-        self.target_ratios_vector = np.asarray(target_ratios_list)
         self.js_divergence = jensen_shannon_divergence(
             self.exposure_ratios_vector, self.target_ratios_vector
         )
