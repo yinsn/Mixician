@@ -5,4 +5,4 @@
 [![PyPI](https://img.shields.io/pypi/v/mixician?color=green)](https://pypi.org/project/mixician/)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yinsn/Mixician)
 
-An advanced hybrid ranking engine for recommendation systems, designed to automate the optimization of algorithms and parameters tailored to diverse business objectives.
+An advanced hybrid ranking engine for recommendation systems, designed to automate the optimization of algorithms and parameters tailored to diverse objectives.
