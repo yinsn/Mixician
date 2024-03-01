@@ -31,7 +31,7 @@ def load_config(file_path: Optional[str] = None) -> Dict:
     else:
         file_path = os.path.abspath(file_path)
 
-    logger.info(f"Loading configuration from {file_path}...")
+    logger.info(f"Loading configuration ...")
     with open(file_path, "r") as file:
         config = yaml.safe_load(file)
 

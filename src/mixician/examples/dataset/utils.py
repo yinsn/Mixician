@@ -1,3 +1,4 @@
+import logging
 import os
 import random
 from typing import Optional
@@ -6,6 +7,11 @@ import numpy as np
 import pandas as pd
 
 from ...dataloaders import ensure_study_directory
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 def generate_lognormal_data_near_zero(
@@ -52,8 +58,11 @@ def create_mix_rank_test_samples(
     Returns:
         pd.DataFrame: A DataFrame containing the generated test samples.
     """
+    logger.info(f"Generating mixed rank test samples for {rows} rows...")
+
     random.seed(seed)
     np.random.seed(seed)
+
     request_ids = [random.randint(1, rows // 100) for _ in range(rows)]
     item_ids = [random.randint(1, rows) for _ in range(rows)]
     page_types = [f"page_type_{i+1}" for i in range(num_page_types)]

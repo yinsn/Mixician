@@ -86,6 +86,7 @@ class PCACalculator(BaseCalculator):
         Returns:
             Tuple[np.ndarray, np.ndarray, np.ndarray]: A tuple containing the projected data, eigenvalues, and eigenvectors.
         """
+        logger.info("Performing weighted PCA on the normalized data...")
         if weights is None:
             weights = np.ones(data_normalized.shape[1])
         data_weighted = data_normalized * weights
