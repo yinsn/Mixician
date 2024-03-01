@@ -1,5 +1,5 @@
 ---
-PCACalculator:
+LogarithmPCACalculator:
   score_columns:
     - pxtr_1
     - pxtr_2
@@ -12,7 +12,7 @@ PCACalculator:
   total_score_column: total_score
   max_rows: null
   n_components: 1
-  pca_default_weights: null
+  pca_default_weights: [10, 1, 20, 1, 1, 1, 1, 100]
   var_normalized: true
   logarithm_transform: true
-  logarithm_smoothing_term: 1.e-10
+  logarithm_smoothing_term: 1e-10

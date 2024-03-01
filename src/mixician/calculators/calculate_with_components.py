@@ -7,12 +7,14 @@ import pandas as pd
 from .base import BaseCalculator, BaseCalculatorConfig
 
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%H:%M:%S",
 )
 logger = logging.getLogger(__name__)
 
 
-class PCACalculatorConfig(BaseCalculatorConfig):
+class LogarithmPCACalculatorConfig(BaseCalculatorConfig):
     """Configuration class for PCA Calculator.
 
     Attributes:
@@ -30,7 +32,7 @@ class PCACalculatorConfig(BaseCalculatorConfig):
     logarithm_smoothing_term: float = 1e-8
 
 
-class PCACalculator(BaseCalculator):
+class LogarithmPCACalculator(BaseCalculator):
     """PCA Calculator for computing principal components analysis.
 
     Args:
@@ -46,7 +48,7 @@ class PCACalculator(BaseCalculator):
 
     def __init__(self, dataframe: pd.DataFrame, config: Optional[Dict] = None) -> None:
         super().__init__(dataframe, config)
-        self.config = PCACalculatorConfig(**(config or {}))
+        self.config = LogarithmPCACalculatorConfig(**(config or {}))
         self.n_components = self.config.n_components
         if self.config.pca_default_weights is None:
             self.pca_default_weights = None
