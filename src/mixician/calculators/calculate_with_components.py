@@ -20,14 +20,14 @@ class LogarithmPCACalculatorConfig(BaseCalculatorConfig):
     Attributes:
         n_components (int): The number of principal components to compute. Defaults to 1.
         pca_default_weights (Optional[List[float]]): Initial weights for PCA calculation. Defaults to None.
-        var_normalized (bool): Flag to determine if variable normalization is applied. Defaults to True.
+        var_normalized (bool): Flag to determine if variable normalization is applied. Defaults to False.
         logarithm_transform (bool): Flag to determine if logarithm transformation is applied. Defaults to True.
         logarithm_smoothing_term (float): Smoothing term for logarithm transformation. Defaults to 1e-8.
     """
 
     n_components: int = 1
     pca_default_weights: Optional[List[float]] = None
-    var_normalized: bool = True
+    var_normalized: bool = False
     logarithm_transform: bool = True
     logarithm_smoothing_term: float = 1e-8
 

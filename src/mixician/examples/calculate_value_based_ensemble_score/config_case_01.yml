@@ -13,6 +13,6 @@ LogarithmPCACalculator:
   max_rows: null
   n_components: 1
   pca_default_weights: [10, 1, 20, 1, 1, 1, 1, 100]
-  var_normalized: true
+  var_normalized: false
   logarithm_transform: true
   logarithm_smoothing_term: 1e-10
