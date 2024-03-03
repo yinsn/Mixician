@@ -66,7 +66,8 @@ class LogarithmPCACalculator(BaseCalculator):
         if self.logarithm_transform:
             logger.info("Applying logarithm transformation to data...")
             data = np.log10(self.logarithm_smoothing_term + data)
-        data_centered = data - np.mean(data, axis=0)
+            self.logarithm_data_means = np.mean(data, axis=0)
+        data_centered = data - self.logarithm_data_means
         if self.var_normalized:
             logger.info("Normalizing variables in data...")
             data_normalized = data_centered / np.std(data_centered, axis=0)
