@@ -1,10 +1,10 @@
 ---
-LogarithmPCACalculator:
+SelfBalancingLogarithmPCACalculatorConfig:
   logarithm_smoothing_term: 1.e-10
   logarithm_transform: true
   max_rows: null
   n_components: 1
-  pca_default_weights: [10, 1, 20, 1, 1, 1, 1, 100]
+  pca_default_weights: [1, 1, 1, 1, 1, 1, 1, 1]
   score_columns:
     - pxtr_1
     - pxtr_2
@@ -14,5 +14,7 @@ LogarithmPCACalculator:
     - pxtr_6
     - pxtr_7
     - pxtr_8
+  target_distribution_mean: 0.5
   total_score_column: total_score
+  upper_bound_3sigma: 1
   var_normalized: false

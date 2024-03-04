@@ -4,6 +4,7 @@ from typing import Dict, List, Optional
 import numpy as np
 import pandas as pd
 
+from ..visualization import DistributionViewer
 from .base import BaseCalculator, BaseCalculatorConfig
 
 logging.basicConfig(
@@ -58,6 +59,7 @@ class LogarithmPCACalculator(BaseCalculator):
         self.logarithm_transform = self.config.logarithm_transform
         self.logarithm_smoothing_term = self.config.logarithm_smoothing_term
         self._data_preprocessing()
+        self.viewer_instance = DistributionViewer(self.dataframe, self.score_columns)
 
     def _data_preprocessing(self) -> None:
         """Preprocesses the input data for PCA calculation."""
@@ -111,4 +113,15 @@ class LogarithmPCACalculator(BaseCalculator):
                 self.pca_default_weights,
                 self.n_components,
             )
+        )
+
+    def plot_logarithm_distributions(self) -> None:
+        """Plots the logarithmic distribution of the scores in the dataframe."""
+        self.viewer_instance.plot_logarithm_distributions()
+
+    def plot_projected_distribution(self) -> None:
+        """Plots the projected data after Logarithm PCA."""
+        self.viewer_instance.plot_array_distribution(
+            scores=self.projected_data,
+            legend="Projected Data",
         )
