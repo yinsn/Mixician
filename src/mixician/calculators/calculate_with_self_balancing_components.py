@@ -43,3 +43,11 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
     def calculte_balanced_weights(self) -> None:
         self._calculate_first_order_weights()
         self._calculate_power_weights()
+
+    def plot_self_balancing_projected_distribution(self) -> None:
+        """Plots the projected data after Logarithm PCA."""
+        self.viewer_instance.plot_array_distribution(
+            scores=self.projected_data / self.projected_data_3sigma_std
+            + self.target_distribution_mean,
+            legend="Projected Data",
+        )
