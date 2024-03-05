@@ -18,34 +18,60 @@ logger = logging.getLogger(__name__)
 
 
 class SelfBalancingLogarithmPCACalculatorConfig(LogarithmPCACalculatorConfig):
-    target_distribution_mean: float = 5.0
-    upper_bound_3sigma: float = 10.0
+    """Configuration for the SelfBalancingLogarithmPCACalculator.
+
+    Attributes:
+        target_distribution_mean (float): Target mean for the distribution after balancing. Defaults to -.5.
+        upper_bound_3sigma (float): Upper bound defined as 3 sigma from the mean. Defaults to 1.0.
+    """
+
+    target_distribution_mean: float = 0.5
+    upper_bound_3sigma: float = 1.0
 
 
 class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
+    """Calculator for self-balancing logarithm PCA weights.
+
+    Inherits from LogarithmPCACalculator to adjust weight calculations for
+    a target distribution.
+
+    Attributes:
+        config (SelfBalancingLogarithmPCACalculatorConfig): Configuration for the calculator.
+        target_distribution_mean (float): Target mean for the balanced distribution.
+        upper_bound_3sigma (float): Defined upper bound as 3 standard deviations from the mean.
+    """
+
     def __init__(self, dataframe: pd.DataFrame, config: Optional[Dict]) -> None:
+        """Initializes the self-balancing logarithm PCA calculator.
+
+        Args:
+            dataframe (pd.DataFrame): The input data for PCA calculation.
+            config (Optional[Dict[str, Any]]): Configuration dictionary, which is unpacked into SelfBalancingLogarithmPCACalculatorConfig.
+        """
         super().__init__(dataframe, config)
         self.config = SelfBalancingLogarithmPCACalculatorConfig(**(config or {}))
         self.target_distribution_mean = self.config.target_distribution_mean
         self.upper_bound_3sigma = self.config.upper_bound_3sigma
 
     def _calculate_first_order_weights(self) -> None:
-        self.first_order_weights = 10.0 ** (-self.logarithm_data_means) - 1.0
-        self.first_order_weights = (
-            self.first_order_weights / self.target_distribution_mean
+        """Calculates first-order weights for the PCA transformation."""
+        self.first_order_weights = 10.0 ** (
+            self.target_distribution_mean - self.logarithm_data_means
         )
 
     def _calculate_power_weights(self) -> None:
+        """Calculates power weights based on projected data standard deviation."""
         projected_data = np.dot(self.data_normalized, self.sorted_eigenvectors)
         self.projected_data_3sigma_std = np.std(projected_data, axis=0) * 6.0
         self.power_weights = self.sorted_eigenvectors / self.projected_data_3sigma_std
 
     def calculte_balanced_weights(self) -> None:
+        """Calculates and applies balanced weights to the PCA components."""
         self._calculate_first_order_weights()
         self._calculate_power_weights()
 
     def plot_self_balancing_projected_distribution(self) -> None:
-        """Plots the projected data after Logarithm PCA."""
+        """Plots the projected data distribution after applying logarithm PCA and balancing weights."""
         self.viewer_instance.plot_array_distribution(
             scores=self.projected_data / self.projected_data_3sigma_std
             + self.target_distribution_mean,
