@@ -56,7 +56,8 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
     def _calculate_first_order_weights(self) -> None:
         """Calculates first-order weights for the PCA transformation."""
         self.first_order_weights = 10.0 ** (
-            self.target_distribution_mean - self.logarithm_data_means
+            self.target_distribution_mean / sum(self.power_weights)
+            - self.logarithm_data_means
         )
 
     def _calculate_power_weights(self) -> None:
@@ -67,13 +68,24 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
 
     def calculte_balanced_weights(self) -> None:
         """Calculates and applies balanced weights to the PCA components."""
-        self._calculate_first_order_weights()
         self._calculate_power_weights()
+        self._calculate_first_order_weights()
+
+    def _calculate_cumulative_product_scores(self) -> None:
+        """Calculates the cumulative product of the scores."""
+        logger.info("Calculating cumulative product of scores...")
+        self.cumulative_product_scores = 1 + np.multiply(
+            self.data, self.first_order_weights
+        )
+        self.cumulative_product_scores = self.cumulative_product_scores ** np.squeeze(
+            self.power_weights
+        )
+        self.cumulative_product_scores = np.prod(self.cumulative_product_scores, axis=1)
 
     def plot_self_balancing_projected_distribution(self) -> None:
         """Plots the projected data distribution after applying logarithm PCA and balancing weights."""
+        self._calculate_cumulative_product_scores()
         self.viewer_instance.plot_array_distribution(
-            scores=self.projected_data / self.projected_data_3sigma_std
-            + self.target_distribution_mean,
+            scores=np.log10(self.cumulative_product_scores),
             legend="Projected Data",
         )
