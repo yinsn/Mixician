@@ -4,7 +4,7 @@ SelfBalancingLogarithmPCACalculatorConfig:
   logarithm_transform: true
   max_rows: null
   n_components: 1
-  pca_default_weights: [1, 1, 1, 1, 1, 1, 1, 1]
+  pca_default_weights: [1, 2, 1, 2, 5, 3, 1, 1]
   score_columns:
     - pxtr_1
     - pxtr_2

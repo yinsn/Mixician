@@ -57,7 +57,7 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         """Calculates first-order weights for the PCA transformation."""
         self.first_order_weights = 10.0 ** (
             self.target_distribution_mean / sum(self.power_weights)
-            - self.logarithm_data_means / np.asarray(self.config.pca_default_weights)
+            - self.logarithm_data_means
         )
 
     def _calculate_power_weights(self) -> None:
@@ -67,6 +67,8 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         self.power_weights = (
             np.squeeze(self.sorted_eigenvectors) / self.projected_data_3sigma_std
         )
+        if sum(self.power_weights) < 0:
+            self.power_weights = -self.power_weights
 
     def calculte_balanced_weights(self) -> None:
         """Calculates and applies balanced weights to the PCA components."""
