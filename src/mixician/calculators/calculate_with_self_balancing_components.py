@@ -57,14 +57,16 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         """Calculates first-order weights for the PCA transformation."""
         self.first_order_weights = 10.0 ** (
             self.target_distribution_mean / sum(self.power_weights)
-            - self.logarithm_data_means
+            - self.logarithm_data_means / np.asarray(self.config.pca_default_weights)
         )
 
     def _calculate_power_weights(self) -> None:
         """Calculates power weights based on projected data standard deviation."""
         projected_data = np.dot(self.data_normalized, self.sorted_eigenvectors)
         self.projected_data_3sigma_std = np.std(projected_data, axis=0) * 6.0
-        self.power_weights = self.sorted_eigenvectors / self.projected_data_3sigma_std
+        self.power_weights = (
+            np.squeeze(self.sorted_eigenvectors) / self.projected_data_3sigma_std
+        )
 
     def calculte_balanced_weights(self) -> None:
         """Calculates and applies balanced weights to the PCA components."""
@@ -77,8 +79,8 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         self.cumulative_product_scores = 1 + np.multiply(
             self.data, self.first_order_weights
         )
-        self.cumulative_product_scores = self.cumulative_product_scores ** np.squeeze(
-            self.power_weights
+        self.cumulative_product_scores = (
+            self.cumulative_product_scores**self.power_weights
         )
         self.cumulative_product_scores = np.prod(self.cumulative_product_scores, axis=1)
 
