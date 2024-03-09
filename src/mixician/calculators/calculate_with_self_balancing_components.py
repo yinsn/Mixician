@@ -93,3 +93,9 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
             scores=np.log10(self.cumulative_product_scores),
             legend="Projected Data",
         )
+
+    def update(self, pca_weights: np.ndarray) -> None:
+        """Updates the PCA weights with the provided weights."""
+        self.update_pca_weights(pca_weights)
+        self.calculte_balanced_weights()
+        self._calculate_cumulative_product_scores()

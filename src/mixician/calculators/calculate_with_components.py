@@ -118,6 +118,15 @@ class LogarithmPCACalculator(BaseCalculator):
             )
         )
 
+    def update_pca_weights(self, pca_weights: np.ndarray) -> None:
+        """Updates the PCA weights and recalculates the PCA.
+
+        Args:
+            pca_weights (np.ndarray): New PCA weights to be applied.
+        """
+        self.pca_default_weights = pca_weights
+        self.calculate()
+
     def plot_logarithm_distributions(self) -> None:
         """Plots the logarithmic distribution of the scores in the dataframe."""
         self.viewer_instance.plot_logarithm_distributions()
