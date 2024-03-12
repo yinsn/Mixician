@@ -99,3 +99,34 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         self.update_pca_weights(pca_weights)
         self.calculte_balanced_weights()
         self._calculate_cumulative_product_scores()
+
+    def show_weights(self) -> None:
+        """
+        Logs the weights and importance of each score column associated with this instance.
+
+        This method combines various weight metrics (PCA default weights, first order weights, and power weights)
+        for each scoring column, formats them into a human-readable string, and logs the information using the
+        class's logger.
+
+        The method temporarily modifies NumPy's print options to suppress scientific notation for better readability.
+        """
+        default_options = np.get_printoptions()
+        np.set_printoptions(suppress=True)
+        messages = []
+        for column, importance, fo_weight, p_weight in zip(
+            self.score_columns,
+            np.asarray(self.pca_default_weights),
+            self.first_order_weights,
+            self.power_weights,
+        ):
+            message = (
+                f"\ncolumn: \t\t\t {column}\n"
+                f"variance importance: \t\t {importance}\n"
+                f"first_order_weights: \t\t {fo_weight}\n"
+                f"power_weights: \t\t\t {p_weight}\n"
+            )
+            messages.append(message)
+
+        full_message = "\n".join(messages)
+        logger.info(full_message)
+        np.set_printoptions(**default_options)
