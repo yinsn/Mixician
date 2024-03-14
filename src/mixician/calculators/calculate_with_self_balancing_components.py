@@ -52,6 +52,7 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         self.config = SelfBalancingLogarithmPCACalculatorConfig(**(config or {}))
         self.target_distribution_mean = self.config.target_distribution_mean
         self.upper_bound_3sigma = self.config.upper_bound_3sigma
+        self.calculte_balanced_weights()
 
     def _calculate_first_order_weights(self) -> None:
         """Calculates first-order weights for the PCA transformation."""

@@ -60,6 +60,7 @@ class LogarithmPCACalculator(BaseCalculator):
         self.logarithm_smoothing_term = self.config.logarithm_smoothing_term
         self._data_preprocessing()
         self.viewer_instance = DistributionViewer(self.dataframe, self.score_columns)
+        self.calculate()
 
     def _data_preprocessing(self) -> None:
         """Preprocesses the input data for PCA calculation."""
@@ -110,6 +111,7 @@ class LogarithmPCACalculator(BaseCalculator):
 
     def calculate(self) -> None:
         """Calculates the PCA based on the initialized configuration and updates the instance attributes with the results."""
+        logger.info("Calculating weighted PCA...")
         self.projected_data, self.sorted_eigenvalues, self.sorted_eigenvectors = (
             self.weighted_pca(
                 self.data_normalized,
