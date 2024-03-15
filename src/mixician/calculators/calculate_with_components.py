@@ -65,8 +65,8 @@ class LogarithmPCACalculator(BaseCalculator):
     def _data_preprocessing(self) -> None:
         """Preprocesses the input data for PCA calculation."""
         logger.info("Preprocessing data for PCA calculation...")
-        self.clean_dataframe = self.dataframe[self.score_columns].dropna()
-        self.data = self.clean_dataframe.to_numpy()
+        self.clean_dataframe = self.dataframe.dropna()
+        self.data = self.clean_dataframe[self.score_columns].to_numpy()
         self.data_means = np.mean(self.data, axis=0)
         if self.logarithm_transform:
             logger.info("Applying logarithm transformation to data...")
