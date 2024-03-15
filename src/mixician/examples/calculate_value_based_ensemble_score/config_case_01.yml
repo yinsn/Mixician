@@ -5,14 +5,6 @@ LogarithmPCACalculator:
   max_rows: null
   n_components: 1
   pca_default_weights: [10, 1, 20, 1, 1, 1, 1, 100]
-  score_columns:
-    - pxtr_1
-    - pxtr_2
-    - pxtr_3
-    - pxtr_4
-    - pxtr_5
-    - pxtr_6
-    - pxtr_7
-    - pxtr_8
+  score_columns: [pxtr_1, pxtr_2, pxtr_3, pxtr_4, pxtr_5, pxtr_6, pxtr_7, pxtr_8]
   total_score_column: total_score
   var_normalized: false
