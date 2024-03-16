@@ -3,6 +3,7 @@ from typing import Dict, Optional
 
 import numpy as np
 import pandas as pd
+from IPython.display import Latex, display
 
 from .calculate_with_components import (
     LogarithmPCACalculator,
@@ -121,7 +122,7 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
             self.power_weights,
         ):
             message = (
-                f"\ncolumn: \t\t\t {column}\n"
+                f"\n\ncolumn: \t\t\t {column}\n"
                 f"variance importance: \t\t {importance}\n"
                 f"first_order_weights: \t\t {fo_weight}\n"
                 f"power_weights: \t\t\t {p_weight}\n"
@@ -131,3 +132,25 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         full_message = "\n".join(messages)
         logger.info(full_message)
         np.set_printoptions(**default_options)
+
+    def show_equation(self) -> None:
+        """
+        Displays the equation in LaTeX format, using instance variables for weights and score columns.
+        """
+        a = self.first_order_weights
+        b = self.power_weights
+        x = self.score_columns
+
+        a_formatted = [f"{ai:.6g}" for ai in a]
+        b_formatted = [f"{bi:.6g}" for bi in b]
+        x_formatted = [f"\\text{{{item}}}".replace("_", "\_") for item in x]
+
+        formula_parts = [
+            f"(1 + {a_i} \cdot {x_i})^{{{b_i}}}"
+            for a_i, b_i, x_i in zip(a_formatted, b_formatted, x_formatted)
+        ]
+        formula = " \\times ".join(formula_parts)
+
+        latex_formula = f"\prod_{{i=1}}^{{{len(a)}}} " + formula
+
+        display(Latex(f"$$ {latex_formula} $$"))

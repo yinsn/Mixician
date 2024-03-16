@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mixician"
-version = "0.1.5"
+version = "0.1.6"
 description = "An advanced hybrid ranking engine for recommendation systems, designed to automate the optimization of algorithms and parameters tailored to diverse business objectives."
 authors = ["Yin Cheng <yin.sjtu@gmail.com>"]
 license = "MIT"
@@ -11,6 +11,7 @@ packages = [{ include = "mixician", from = "src" }]
 
 [tool.poetry.dependencies]
 ipykernel = "^6.29.3"
+ipython = "^8.1"
 jax = "^0.4.24"
 matplotlib = "^3.8.3"
 numpyro = "^0.13.2"
