@@ -90,10 +90,11 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
 
     def plot_self_balancing_projected_distribution(self) -> None:
         """Plots the projected data distribution after applying logarithm PCA and balancing weights."""
-        self._calculate_cumulative_product_scores()
-        self.viewer_instance.plot_array_distribution(
-            scores=np.log10(self.cumulative_product_scores),
-            legend="Projected Data",
+        if self.cumulative_product_scores is None:
+            self._calculate_cumulative_product_scores()
+        self.viewer_instance.plot_logarithm_array_distribution(
+            scores=self.cumulative_product_scores,
+            legend=r"$\log_{10}{(\text{cumulative\_product\_scores})}$",
         )
 
     def update(self, pca_weights: np.ndarray) -> None:
@@ -153,4 +154,4 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
 
         latex_formula = f"\prod_{{i=1}}^{{{len(a)}}} " + formula
 
-        display(Latex(f"$$ {latex_formula} $$"))
+        display(Latex(f"$ {latex_formula} $"))

@@ -42,7 +42,7 @@ class DistributionViewer:
                 np.log10(self.dataframe[column]), label=column, fill=True, color=color
             )
             plt.yscale("symlog")
-        plt.legend(loc="center left")
+        plt.legend(loc="center left", framealpha=0, edgecolor="none")
         plt.xlabel(r"$\log_{10}(\text{Scores})$")
         plt.ylabel("Density (symlog)")
         plt.show()
@@ -65,8 +65,9 @@ class DistributionViewer:
             legend (str): The legend label for the plot.
         """
         DistributionViewer._common_settings()
-        sns.kdeplot(np.log10(scores), fill=True)
+        sns.kdeplot(np.log10(scores), fill=True, color="darkorange")
         plt.yscale("symlog")
+        plt.legend([legend], framealpha=0, edgecolor="none")
         plt.xlabel(r"$\log_{10}(\text{Scores})$")
         plt.ylabel("Density (symlog)")
         plt.show()
@@ -82,7 +83,7 @@ class DistributionViewer:
         DistributionViewer._common_settings()
         sns.kdeplot(scores, fill=True, color="darkorange")
         plt.yscale("linear")
-        plt.legend([legend])
+        plt.legend([legend], framealpha=0, edgecolor="none")
         plt.xlabel(r"$\text{Scores}$")
         plt.ylabel("Density (linear)")
         plt.show()

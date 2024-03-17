@@ -34,10 +34,55 @@ def generate_lognormal_data_near_zero(
     return np.clip(data, 0, 1)
 
 
+def create_random_boolean_labels(
+    dataframe: pd.DataFrame,
+    reference_column: str,
+    rows: int,
+) -> np.ndarray:
+    """
+    Creates random boolean labels for the specified number of rows.
+    """
+    labels = np.zeros(rows, dtype=int)
+    top_indices = dataframe[reference_column] > dataframe[reference_column].quantile(
+        0.95
+    )
+
+    labels[top_indices] = 1
+    return labels
+
+
+def create_random_numeric_labels(
+    dataframe: pd.DataFrame,
+    reference_column: str,
+    rows: int,
+    seed: int = 42,
+    low: float = 0.0,
+    high: float = 10000.0,
+) -> np.ndarray:
+    """
+    Creates random numeric labels for the specified number of rows.
+    """
+    random.seed(seed)
+    labels = np.zeros(rows, dtype=float)
+    num_non_zero = int(0.1 * rows)
+    non_zero_indices = np.random.choice(
+        np.arange(rows), size=num_non_zero, replace=False
+    )
+    sorted_indices = non_zero_indices[
+        np.argsort(dataframe.iloc[non_zero_indices][reference_column])
+    ]
+    min_value, max_value = low, high
+    sorted_random_values = np.linspace(min_value, max_value, num_non_zero)
+    labels[sorted_indices] = sorted_random_values
+    return labels
+
+
 def create_mix_rank_test_samples(
     rows: int,
     num_page_types: int,
     num_features: int,
+    num_boolean_labels: int,
+    num_numeric_labels: int,
     lognormal_mean_lower_bound: float = -6,
     lognormal_sigma_upper_bound: float = 1,
     seed: int = 42,
@@ -51,6 +96,8 @@ def create_mix_rank_test_samples(
         rows (int): Number of rows (samples) to generate.
         num_page_types (int): Number of distinct page types/categories.
         num_features (int): Number of features to generate per sample.
+        num_boolean_labels (int): Number of boolean labels to generate per sample.
+        num_numeric_labels (int): Number of numeric labels to generate per sample.
         lognormal_mean_lower_bound (float, optional): Lower bound for the mean of the lognormal distribution. Defaults to -6.
         lognormal_sigma_upper_bound (float, optional): Upper bound for the sigma of the lognormal distribution. Defaults to 1.
         seed (int, optional): Seed for the random number generator. Defaults to 42.
@@ -86,6 +133,24 @@ def create_mix_rank_test_samples(
         df[f"pxtr_{i+1}"] = lognormal_data
 
     df = df.sort_values(by="request_id").reset_index(drop=True)
+    feature_columns = [f"pxtr_{i+1}" for i in range(num_features)]
+    df["total_score"] = df[feature_columns].prod(axis=1)
+
+    for i in range(num_boolean_labels):
+        df[f"boolean_label_{i+1}"] = create_random_boolean_labels(
+            dataframe=df,
+            reference_column="total_score",
+            rows=rows,
+        )
+
+    for i in range(num_numeric_labels):
+        df[f"numeric_label_{i+1}"] = create_random_numeric_labels(
+            dataframe=df,
+            reference_column="total_score",
+            rows=rows,
+            seed=seed + i,
+        )
+    df = df.drop(columns=["total_score"])
 
     study_path = ensure_study_directory(
         study_path=study_path,
