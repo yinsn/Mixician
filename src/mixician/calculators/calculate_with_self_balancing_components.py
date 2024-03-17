@@ -93,7 +93,7 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         if self.cumulative_product_scores is None:
             self._calculate_cumulative_product_scores()
         self.viewer_instance.plot_logarithm_array_distribution(
-            scores=self.cumulative_product_scores,
+            scores=np.asarray(self.cumulative_product_scores),
             legend=r"$\log_{10}{(\text{cumulative\_product\_scores})}$",
         )
 
