@@ -1,0 +1,14 @@
+---
+DataLoader:
+  file_path: PATH_TO_DATA
+  file_name: mix_rank_test_samples
+Calculator:
+  score_columns: [pxtr_1, pxtr_2, pxtr_3, pxtr_4]
+  target_distribution_mean: 0.5
+  upper_bound_3sigma: 1
+Objective:
+  direction: maximize
+  formula: 10 * targets[0] - targets[1]
+Evaluator:
+  flags: [auc, portfolio]
+  labels: [boolean_label_1, numeric_label_1]
