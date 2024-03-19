@@ -9,6 +9,7 @@ from .calculate_with_components import (
     LogarithmPCACalculator,
     LogarithmPCACalculatorConfig,
 )
+from .limit_upper_bound import find_top_percentile_value
 
 logging.basicConfig(
     level=logging.INFO,
@@ -22,11 +23,9 @@ class SelfBalancingLogarithmPCACalculatorConfig(LogarithmPCACalculatorConfig):
     """Configuration for the SelfBalancingLogarithmPCACalculator.
 
     Attributes:
-        target_distribution_mean (float): Target mean for the distribution after balancing. Defaults to -.5.
         upper_bound_3sigma (float): Upper bound defined as 3 sigma from the mean. Defaults to 1.0.
     """
 
-    target_distribution_mean: float = 0.5
     upper_bound_3sigma: float = 1.0
 
 
@@ -38,7 +37,6 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
 
     Attributes:
         config (SelfBalancingLogarithmPCACalculatorConfig): Configuration for the calculator.
-        target_distribution_mean (float): Target mean for the balanced distribution.
         upper_bound_3sigma (float): Defined upper bound as 3 standard deviations from the mean.
     """
 
@@ -51,8 +49,8 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         """
         super().__init__(dataframe, config)
         self.config = SelfBalancingLogarithmPCACalculatorConfig(**(config or {}))
-        self.target_distribution_mean = self.config.target_distribution_mean
         self.upper_bound_3sigma = self.config.upper_bound_3sigma
+        self.target_distribution_mean = self.upper_bound_3sigma / 2.0
         self.calculte_balanced_weights()
 
     def _calculate_first_order_weights(self) -> None:
@@ -79,7 +77,6 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
 
     def _calculate_cumulative_product_scores(self) -> None:
         """Calculates the cumulative product of the scores."""
-        logger.info("Calculating cumulative product of scores...")
         self.cumulative_product_scores = 1 + np.multiply(
             self.data, self.first_order_weights
         )
@@ -87,6 +84,65 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
             self.cumulative_product_scores**self.power_weights
         )
         self.cumulative_product_scores = np.prod(self.cumulative_product_scores, axis=1)
+
+    def _calculate_percentile_weights(self, scaling_factor: float = 1.0) -> float:
+        """
+        Adjusts power weights by a scaling factor and calculates the upper bound based on the adjusted weights.
+
+        This method temporarily adjusts the power weights of the object by a given scaling factor, recalculates
+        dependent metrics, and then calculates the upper bound of the cumulative product scores at a very
+        small percentile. After calculation, the power weights are reset to their original values.
+
+        Args:
+            scaling_factor (float): A scaling factor to adjust the power weights, defaulted to 1.0.
+
+        Returns:
+            float: The calculated upper bound value at the specified small percentile of cumulative product scores.
+
+        """
+        self.initial_power_weights = self.power_weights
+        self.power_weights = self.power_weights * scaling_factor
+        self._calculate_first_order_weights()
+        self._calculate_cumulative_product_scores()
+        upper_bound = find_top_percentile_value(self.cumulative_product_scores, 0.00135)
+        self.power_weights = self.initial_power_weights
+        return upper_bound
+
+    def tune_upper_bound(
+        self,
+        target_upper_bound: float,
+        low: float = 0.001,
+        high: float = 5.0,
+        tolerance: float = 0.01,
+    ) -> None:
+        """
+        Tunes the scaling factor to achieve a desired upper bound for the cumulative product scores.
+
+        This method performs a binary search within a specified range to find a scaling factor that,
+        when applied, results in a calculated upper bound close to a target value. It aims to adjust
+        the scaling factor such that the absolute difference between the calculated upper bound and
+        the target upper bound is within a given tolerance.
+
+        Args:
+            target_upper_bound (float): The desired upper bound value to tune for.
+            low (float): The lower bound of the scaling factor range for the binary search, defaults to 0.001.
+            high (float): The upper bound of the scaling factor range for the binary search, defaults to 5.0.
+            tolerance (float): The acceptable tolerance level for the difference between the calculated
+                upper bound and the target upper bound, defaults to 0.01.
+
+        """
+        logger.info(f"Tuning upper bound to {target_upper_bound}...")
+        while low <= high:
+            mid = (low + high) / 2.0
+            upper_bound = self._calculate_percentile_weights(mid)
+            if abs(upper_bound - target_upper_bound) <= tolerance:
+                self.power_weights = self.initial_power_weights * low
+                self._calculate_first_order_weights()
+                self._calculate_cumulative_product_scores()
+            elif upper_bound < target_upper_bound:
+                low = mid + tolerance
+            else:
+                high = mid - tolerance
 
     def plot_self_balancing_projected_distribution(self) -> None:
         """Plots the projected data distribution after applying logarithm PCA and balancing weights."""
@@ -101,7 +157,7 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         """Updates the PCA weights with the provided weights."""
         self.update_pca_weights(pca_weights)
         self.calculte_balanced_weights()
-        self._calculate_cumulative_product_scores()
+        self.tune_upper_bound(np.power(10, self.upper_bound_3sigma))
 
     def show_weights(self) -> None:
         """

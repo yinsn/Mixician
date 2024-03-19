@@ -4,7 +4,6 @@ DataLoader:
   file_name: mix_rank_test_samples
 Calculator:
   score_columns: [pxtr_1, pxtr_2, pxtr_3, pxtr_4]
-  target_distribution_mean: 0.5
   upper_bound_3sigma: 1
 Objective:
   direction: maximize
