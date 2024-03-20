@@ -75,6 +75,8 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         """Calculates and applies balanced weights to the PCA components."""
         self._calculate_power_weights()
         self._calculate_first_order_weights()
+        self._calculate_cumulative_product_scores()
+        self.tune_upper_bound(self.upper_bound_3sigma)
 
     def _calculate_cumulative_product_scores(self) -> None:
         """Calculates the cumulative product of the scores."""
