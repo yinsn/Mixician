@@ -142,10 +142,11 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
                 self.power_weights = self.initial_power_weights * low
                 self._calculate_first_order_weights()
                 self._calculate_cumulative_product_scores()
+                break
             elif upper_bound < target_upper_bound:
-                low = mid + tolerance
+                low = mid
             else:
-                high = mid - tolerance
+                high = mid
 
     def plot_self_balancing_projected_distribution(self) -> None:
         """Plots the projected data distribution after applying logarithm PCA and balancing weights."""
