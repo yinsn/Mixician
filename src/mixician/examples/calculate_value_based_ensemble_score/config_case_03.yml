@@ -4,7 +4,7 @@ DataLoader:
   file_name: mix_rank_test_samples
 Calculator:
   score_columns: [pxtr_1, pxtr_2, pxtr_3, pxtr_4]
-  upper_bound_3sigma: 1
+  upper_bound_3sigma: 10
 Objective:
   direction: maximize
   formula: 10 * targets[0] - targets[1]

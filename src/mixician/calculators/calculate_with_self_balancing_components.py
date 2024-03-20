@@ -23,10 +23,10 @@ class SelfBalancingLogarithmPCACalculatorConfig(LogarithmPCACalculatorConfig):
     """Configuration for the SelfBalancingLogarithmPCACalculator.
 
     Attributes:
-        upper_bound_3sigma (float): Upper bound defined as 3 sigma from the mean. Defaults to 1.0.
+        upper_bound_3sigma (float): Upper bound defined as 3 sigma from the mean. Defaults to 10.
     """
 
-    upper_bound_3sigma: float = 1.0
+    upper_bound_3sigma: float = 10
 
 
 class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
@@ -50,7 +50,8 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         super().__init__(dataframe, config)
         self.config = SelfBalancingLogarithmPCACalculatorConfig(**(config or {}))
         self.upper_bound_3sigma = self.config.upper_bound_3sigma
-        self.target_distribution_mean = self.upper_bound_3sigma / 2.0
+        self.upper_bound_3sigma_in_log10 = np.log10(self.upper_bound_3sigma)
+        self.target_distribution_mean = self.upper_bound_3sigma_in_log10 / 2.0
         self.calculte_balanced_weights()
 
     def _calculate_first_order_weights(self) -> None:
@@ -157,7 +158,7 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         """Updates the PCA weights with the provided weights."""
         self.update_pca_weights(pca_weights)
         self.calculte_balanced_weights()
-        self.tune_upper_bound(np.power(10, self.upper_bound_3sigma))
+        self.tune_upper_bound(self.upper_bound_3sigma)
 
     def show_weights(self) -> None:
         """
