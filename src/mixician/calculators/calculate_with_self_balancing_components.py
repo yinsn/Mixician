@@ -158,7 +158,6 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         """Updates the PCA weights with the provided weights."""
         self.update_pca_weights(pca_weights)
         self.calculte_balanced_weights()
-        self.tune_upper_bound(self.upper_bound_3sigma)
 
     def show_weights(self) -> None:
         """
