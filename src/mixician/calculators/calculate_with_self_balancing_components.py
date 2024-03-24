@@ -162,7 +162,7 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         self.update_pca_weights(pca_weights)
         self.calculte_balanced_weights()
 
-    def show_weights(self) -> None:
+    def get_weights(self) -> None:
         """
         Logs the weights and importance of each score column associated with this instance.
 
@@ -190,7 +190,7 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
             messages.append(message)
 
         full_message = "\n".join(messages)
-        logger.info(full_message)
+        self.results = full_message
         np.set_printoptions(**default_options)
 
     def show_equation(self) -> None:
@@ -212,5 +212,10 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         formula = " \\times ".join(formula_parts)
 
         latex_formula = f"\prod_{{i=1}}^{{{len(a)}}} " + formula
+        self.latex_formula = latex_formula
+        display(Latex(f"$ {self.latex_formula} $"))
 
-        display(Latex(f"$ {latex_formula} $"))
+    def show_results(self) -> None:
+        self.get_weights()
+        self.show_equation()
+        logger.info(self.results)
