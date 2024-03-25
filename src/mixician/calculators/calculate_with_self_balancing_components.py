@@ -176,7 +176,7 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         np.set_printoptions(suppress=True)
         messages = []
         for column, importance, fo_weight, p_weight in zip(
-            self.score_columns,
+            self.selected_columns,
             np.asarray(self.pca_default_weights),
             self.first_order_weights,
             self.power_weights,
@@ -199,7 +199,7 @@ class SelfBalancingLogarithmPCACalculator(LogarithmPCACalculator):
         """
         a = self.first_order_weights
         b = self.power_weights
-        x = self.score_columns
+        x = self.selected_columns
 
         a_formatted = [f"{ai:.6g}" for ai in a]
         b_formatted = [f"{bi:.6g}" for bi in b]

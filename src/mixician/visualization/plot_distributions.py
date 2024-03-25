@@ -14,20 +14,20 @@ class DistributionViewer:
 
     Attributes:
         dataframe (pd.DataFrame): The dataframe containing score data.
-        score_columns (List[str]): The list of column names in the dataframe to plot.
+        selected_columns (List[str]): The list of column names in the dataframe to plot.
 
     """
 
-    def __init__(self, dataframe: pd.DataFrame, score_columns: List[str]) -> None:
+    def __init__(self, dataframe: pd.DataFrame, selected_columns: List[str]) -> None:
         """Initializes the DistributionViewer with a dataframe and score columns.
 
         Args:
             dataframe (pd.DataFrame): The dataframe containing the score data.
-            score_columns (List[str]): The list of column names in the dataframe that contain
+            selected_columns (List[str]): The list of column names in the dataframe that contain
                                        score data to be visualized.
         """
         self.dataframe = dataframe
-        self.score_columns = score_columns
+        self.selected_columns = selected_columns
 
     def plot_logarithm_distributions(self) -> None:
         """Plots the logarithmic distribution of the scores in the dataframe.
@@ -36,8 +36,8 @@ class DistributionViewer:
         useful for visualizing data that spans several orders of magnitude.
         """
         DistributionViewer._common_settings()
-        palette = sns.color_palette("Spectral", len(self.score_columns))
-        for column, color in zip(self.score_columns, palette):
+        palette = sns.color_palette("Spectral", len(self.selected_columns))
+        for column, color in zip(self.selected_columns, palette):
             sns.kdeplot(
                 np.log10(self.dataframe[column]), label=column, fill=True, color=color
             )

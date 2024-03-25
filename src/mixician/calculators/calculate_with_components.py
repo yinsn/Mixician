@@ -59,14 +59,14 @@ class LogarithmPCACalculator(BaseCalculator):
         self.logarithm_transform = self.config.logarithm_transform
         self.logarithm_smoothing_term = self.config.logarithm_smoothing_term
         self._data_preprocessing()
-        self.viewer_instance = DistributionViewer(self.dataframe, self.score_columns)
+        self.viewer_instance = DistributionViewer(self.dataframe, self.selected_columns)
         self.calculate()
 
     def _data_preprocessing(self) -> None:
         """Preprocesses the input data for PCA calculation."""
         logger.info("Preprocessing data for PCA calculation...")
         self.clean_dataframe = self.dataframe.dropna()
-        self.data = self.clean_dataframe[self.score_columns].to_numpy()
+        self.data = self.clean_dataframe[self.selected_columns].to_numpy()
         self.data_means = np.mean(self.data, axis=0)
         if self.logarithm_transform:
             logger.info("Applying logarithm transformation to data...")

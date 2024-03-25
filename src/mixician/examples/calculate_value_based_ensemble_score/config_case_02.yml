@@ -5,7 +5,7 @@ SelfBalancingLogarithmPCACalculatorConfig:
   max_rows: null
   n_components: 1
   pca_default_weights: [1, 2, 1, 2, 5, 3, 1, 1]
-  score_columns: [pxtr_1, pxtr_2, pxtr_3, pxtr_4, pxtr_5, pxtr_6, pxtr_7, pxtr_8]
+  selected_columns: [pxtr_1, pxtr_2, pxtr_3, pxtr_4, pxtr_5, pxtr_6, pxtr_7, pxtr_8]
   total_score_column: total_score
   upper_bound_3sigma: 10
   var_normalized: false
