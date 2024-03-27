@@ -10,4 +10,4 @@ Objective:
   formula: 10 * targets[0] - targets[1]
 Evaluator:
   flags: [auc, portfolio]
-  labels: [boolean_label_1, numeric_label_1]
+  target_columns: [boolean_label_1, numeric_label_1]
